@@ -45,7 +45,7 @@ dotfiles を `~/` に `.dotfiles` として `git clone` する。
 
     git clone https://HipBird@bitbucket.org/HipBird/dotfiles.git ~/.dotfiles
 
-dotfiles/dotzshrc` を `.zshrc` として `~/` へシムリンクする
+`dotfiles/dotzshrc` を `.zshrc` として `~/` へシムリンクする
 
     ln -nfs ~/.dotfiles/dotzshrc ~/.zshrc
 
