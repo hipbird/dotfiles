@@ -36,3 +36,4 @@ home/gvimrc,.gvimrc
 home/bashrc,.bashrc
 home/gitconfig,.gitconfig
 home/gitignore_global,.gitignore_global
+home/zprezto/runcoms/zshrc,.zprezto/runcoms/zshrc
