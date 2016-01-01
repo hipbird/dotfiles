@@ -1,0 +1,18 @@
+#
+# Executes commands at the start of an interactive session.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+
+# Source Prezto.
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+fi
+
+# Customize to your needs...
+
+# dot config
+export DOT_REPO="https://HipBird@bitbucket.org/HipBird/dotfiles.git"
+export DOT_DIR="$HOME/.dotfiles"
+source $HOME/.dotfiles/bin/dot/dot.sh
