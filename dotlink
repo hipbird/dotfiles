@@ -33,7 +33,6 @@
 home/ssh,.ssh
 home/vimrc,.vimrc
 home/gvimrc,.gvimrc
-home/zprezto,.zprezto
 home/bashrc,.bashrc
 home/gitconfig,.gitconfig
 home/gitignore_global,.gitignore_global
