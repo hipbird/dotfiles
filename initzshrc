@@ -1,0 +1,4 @@
+# dot config
+export DOT_REPO="https://HipBird@bitbucket.org/HipBird/dotfiles.git"
+export DOT_DIR="$HOME/.dotfiles"
+source $HOME/.dotfiles/bin/dot/dot.sh
