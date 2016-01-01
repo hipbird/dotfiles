@@ -12,6 +12,14 @@ fi
 
 # Customize to your needs...
 
+## MacVim-Kaoriya を Terminal から使う
+if [ -f /Applications/MacVim.app/Contents/MacOS/Vim ]; then
+    export EDITOR=/Applications/MacVim.app/Contents/MacOS/Vim
+    export GIT_EDITOR=$EDITOR
+    alias vi='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+    alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+fi
+
 # dot config
 export DOT_REPO="https://HipBird@bitbucket.org/HipBird/dotfiles.git"
 export DOT_DIR="$HOME/.dotfiles"
