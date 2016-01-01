@@ -5,7 +5,6 @@
 ドットファイルの管理には [ssh0](https://github.com/ssh0) さんの [dot](https://github.com/ssh0/dot/blob/master/README_ja.md) を利用する。
 
 zsh の環境設定には [Prezto](https://github.com/sorin-ionescu/prezto) を利用。  
-※ Prezto は、ドットファイルに一式含まれる。
 
 ## 最低限の前提環境
 
@@ -14,7 +13,7 @@ zsh の環境設定には [Prezto](https://github.com/sorin-ionescu/prezto) を�
   - homebrew
 
 ## 環境構築方法
-homebrew で zsh をインストールする。
+homebrew で zsh をインストールする
 
     brew install zsh
 
@@ -37,7 +36,18 @@ homebrew でインストールした zsh をログインシェルにする
     $ chsh -s /usr/local/bin/zsh
     # パスワードを入れれば反映
 
-dot を `~/.zsh/plugins/dot` に `git clone` する。
+Prezto を `~/` へ `git clone` する
+
+    git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+
+Prezto の設定ファイルを `~/` へシムリンクする
+
+    setopt EXTENDED_GLOB
+    for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+      ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+    done
+
+dot を `~/.zsh/plugins/dot` に `git clone` する
 
     git clone https://github.com/ssh0/dot.git ~/.zsh/plugins/dot
 
@@ -45,9 +55,9 @@ dotfiles を `~/` に `.dotfiles` として `git clone` する。
 
     git clone https://HipBird@bitbucket.org/HipBird/dotfiles.git ~/.dotfiles
 
-`dotfiles/dotzshrc` を `.zshrc` として `~/` へシムリンクする
+`.dotfiles/initzshrc` を `.zshrc` として `~/` へシムリンクする
 
-    ln -nfs ~/.dotfiles/dotzshrc ~/.zshrc
+    ln -nfs ~/.dotfiles/initzshrc ~/.zshrc
 
 ※このシムリンクは dot を動かすための一時的なもので、次の手順で置き換えられる
 
