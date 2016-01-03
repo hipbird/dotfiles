@@ -36,6 +36,14 @@ homebrew でインストールした zsh をログインシェルにする
     $ chsh -s /usr/local/bin/zsh
     # パスワードを入れれば反映
 
+homebrew で tmux をインストールする
+
+    brew install tmux
+
+併せて `reattach-to-user-namespace` をインストール
+
+    brew install reattach-to-user-namespace
+
 Prezto を `~/` へ `git clone` する
 
     git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
