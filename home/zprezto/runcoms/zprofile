@@ -79,3 +79,5 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 # nodebrew
 export PATH=$HOME/.nodebrew/current/bin:$PATH
 
+# pyenv
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
