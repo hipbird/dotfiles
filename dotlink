@@ -41,3 +41,4 @@ home/zprezto/runcoms/zpreztorc,.zprezto/runcoms/zpreztorc
 home/tmux.conf,.tmux.conf
 .config/ranger,.config/ranger
 home/config/ranger,.config/ranger
+home/bash_profile,.bash_profile
