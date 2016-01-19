@@ -99,18 +99,10 @@ set noundofile   "アンドゥーセッションファイルを作らない
 " 表示関連 {{{
 " let g:seoul256_background = 235
 syntax enable
-
-if has('win32') || has ('win64')
-  colorscheme solarized
-  let g:solarized_termcolors=256
-  let g:solarized_termtrans=1
-endif
-
-if has('mac')
-  colorscheme hybrid
-endif
-
 set background=dark
+let g:solarized_termtrans=1
+colorscheme solarized
+
 set cursorline        "カーソル行強調
 set number            "行番号を表示する
 set visualbell        "ビープ音を抑制
@@ -365,8 +357,10 @@ autocmd bufwritepre * :call StripTrailingWhiteSpace()
 let g:indent_guides_enable_on_vim_startup=1
 let g:indent_guides_auto_colors = 0
 let g:indent_guides_start_level = 2
-let g:indent_guides_guide_size = 1
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd guibg='#23272A' ctermbg=darkgrey
+let g:indent_guides_guide_size = 2
+let g:indent_guides_space_guides=1
+let g:indent_guides_color_change_percent = 30
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd guibg='#23272A' ctermbg=0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg='#202224'
 
 " vim-smartword {{{
