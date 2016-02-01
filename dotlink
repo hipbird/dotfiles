@@ -42,3 +42,5 @@ home/tmux.conf,.tmux.conf
 .config/ranger,.config/ranger
 home/config/ranger,.config/ranger
 home/bash_profile,.bash_profile
+home/vimperator/vimppm,.vimperator/vimppm
+home/vimperatorrc,.vimperatorrc

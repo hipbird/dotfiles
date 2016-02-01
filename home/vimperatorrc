@@ -1,0 +1,4 @@
+vim: set filetype=vim :
+
+" vimppm でプラグインを管理
+source ~/.vimperator/vimppm/plugin/vimppm.js
