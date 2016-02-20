@@ -1,4 +1,294 @@
-vim: set filetype=vim :
-
+" vim: set filetype=vim :
 " vimppm でプラグインを管理
 source ~/.vimperator/vimppm/plugin/vimppm.js
+
+vimppm '_libly.js'
+vimppm 'caret-hint.js'
+vimppm 'appendAnchor.js'
+vimppm '_smooziee.js'
+vimppm 'bookmarktoolbar-hint.js'
+vimppm 'migemized_find.js'
+vimppm 'auto-focus-frame.js'
+vimppm 'auto_detect_link.js'
+vimppm 'walk-input.js'
+
+" about:config
+"============================
+set! xpinstall.signatures.required=false
+" https://piro.sakura.ne.jp/xul/xpi/nightly/
+"============================
+" General
+"============================
+"ブラウザタイトルの変更
+set titlestring=
+" デフォルトの検索エンジン
+set defsearch=google
+" 入力欄に自動フォーカスしない
+set focuscontent
+" ビープ,ビジュアルベルを無効
+set visualbell
+highlight Bell display:none
+"ページ全体で検索語を強調表示
+set hlsearch
+"コマンド入力時にコマンド名を自動補完
+set wildoptions=auto
+" :oなどでの補完候補をサーチエンジン、履歴に限定
+set complete=sl
+" Hintモードでアルファベット使用
+set hintchars=qzasfghjkl
+" 検索時、大文字が含まれている場合にのみ case sensitiveにする
+set ignorecase
+set smartcase
+
+set gui=nonavigation
+" ツールバーはアドオンとタブのみ表示
+"set gui=addons,nobookmarks,nomenu,nonavigation,tabs
+" commandモードでIMEオフ
+style! -name=commandline-ime chrome://* #liberator-commandline-command input {ime-mode: inactive;}
+" キャレット幅を変更
+set! ui.caretWidth=8
+
+" auto append anchor を起動時に有効化
+let g:auto_append_anchor = "true"
+
+"============================
+" Key mapping
+"============================
+" To Enable map <Space>
+js <<EOM
+  window.addEventListener('keypress',function (event) {
+    var code=event.charCode;
+    if ((liberator.mode === modes.INSERT && modes.extended === modes.MENU)
+    ||(liberator.mode ==modes.NORMAL && code==32)
+    ||(liberator.mode ==modes.COMMAND_LINE && code !=32)){
+      let map = mappings.get(liberator.mode, events.toString(event));
+      if (map) {
+        event.preventDefault();
+        event.stopPropagation();
+        map.execute();
+      }
+    }
+  },false);
+EOM
+
+" My Customization
+map <Space> <Leader>
+
+" google検索を手早くする
+nnoremap s :tabopen<Space>google<Space>
+
+" dをブラウザ標準の「タブを閉じる」にマッピング
+js<<EOM
+if (liberator.has("Win32")) {
+   liberator.execute("map d <C-w>");
+    } else if (liberator.has("MacUnix")) {
+    liberator.execute("map d <M-w>");
+    } else {
+    liberator.execute("map d <C-w>");
+    }
+EOM
+
+" 移動幅 _smoozie.js とは併用しない
+" nnoremap j 5j
+" nnoremap k 5k
+
+" h/l にタブ切り替えを割り当て
+nmap h <C-p>
+nmap l <C-n>
+
+" H/Lに左右を割り当てる
+map H <Left>
+map L <Right>
+
+"ソースを表示するキーを無効化
+map gf <Nop>
+
+"BackSpaceで戻るを無効化
+map <BS> <Nop>
+
+" Aの右+h/Aの右+lに戻る/進むを割り当てる
+js<<EOM
+if (liberator.has("Win32")) {
+   liberator.execute("map <C-h> <A-Left>");
+   liberator.execute("map <C-l> <A-Right>");
+    } else if (liberator.has("MacUnix")) {
+    liberator.execute("map <M-h> <A-Left>");
+    liberator.execute("map <M-l> <A-Right>");
+    } else {
+    liberator.execute("map <C-h> <A-Left>");
+    liberator.execute("map <C-l> <A-Right>");
+    }
+EOM
+
+" move cursor in command mode
+cnoremap <C-h> <Left>
+cnoremap <C-l> <Right>
+
+" cursor move
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
+
+" undo一覧から開く
+nnoremap U :undo<Space>
+let g:hint_tombloo_key = 'r'
+" ブラウザ再起動
+nnoremap <C-r> :restart<CR>
+"行頭/行末移動
+noremap gh  ^
+noremap gl  $
+
+inoremap <Space>h <HOME>
+inoremap <Space>l <END>
+
+" 選択文字列でググる(マウスとVISUALモードの選択時に対応)
+" pは文字列によってURLと判断されて誤爆するので明示的にGoogle検索を指定する
+js<<EOM
+if (liberator.has("Win32")) {
+    liberator.execute("nmap S <C-c>:tabopen<Space>google<Space><C-v><CR>");
+    liberator.execute("vmap S <C-c><Esc><Esc>:tabopen<Space>google<Space><C-v><CR>");
+    liberator.execute("nnoremap p :tabopen<Space>google<Space><C-v><CR>");
+    } else if (liberator.has("MacUnix")) {
+    liberator.execute("nmap S <M-c>:tabopen<Space>google<Space><M-v><CR>");
+    liberator.execute("vmap S <M-c><Esc><Esc>:tabopen<Space>google<Space><M-v><CR>");
+    liberator.execute("nnoremap p :tabopen<Space>google<Space><M-v><CR>");
+    } else {
+    liberator.execute("nmap S <C-c>:tabopen<Space>google<Space><C-v><CR>");
+    liberator.execute("vmap S <C-c><Esc><Esc>:tabopen<Space>google<Space><C-v><CR>");
+    liberator.execute("nnoremap p :tabopen<Space>google<Space><C-v><CR>");
+    }
+EOM
+
+" "Y" でページタイトルをヤンク
+nnoremap Y :js util.copyToClipboard(buffer.title, true)<CR>
+
+" =====================================
+"e でツリー型タブの表示をトグル
+js<<EOM
+liberator.globalVariables.toggler = {
+  tab:  ["set gui=tabs","set gui=notabs"],
+};
+EOM
+nnoremap e :toggle tab<CR>:js TreeStyleTabBrowserAutoHide.toggleMode();<CR>
+
+" _smooziee.js
+ let g:smooziee_scroll_amount="100"
+ let g:smooziee_scroll_interval="15"
+
+" Google Transrator(アドオン前提。動作確認：2.1.0.3m)
+command transrate javascript zol_bod_google_translator.ToolBarTranslatorClick()
+noremap <C-y> :transrate<CR>
+
+"============================
+" colorscheme
+"============================
+"----------------------------
+" Hint
+"----------------------------
+hi Hint font-family: Helvetica Neue; font-size: 16px; font-weight:bold; text-shadow: -1px -1px 1.5px #363132, 1px -1px 1.5px #363132, -1px 1px 1.5px #363132, 1px 1px 1.5px #363132; color: #F2C68B;
+hi HintElem color: gray; background-color: #8AC6F2;
+hi HintActive color: black; background-color: #95E454;
+
+hi ErrorMsg color:white; background-color: #ec6aa1;
+
+
+"コマンドライン
+hi CmdLine      font-family: Ricty for Powerline; font-size: 15px; line-height:30px; padding: 1px; background: #2C3B50;
+hi CmdOutput    white-space: pre;
+"コマンドラインの通常テキスト
+hi Normal       color: #839496; font-size: 15px; background: #082E39;
+"コマンドラインのモード表示
+hi ModeMsg      color: #839496; font-size: 15px; background: #082E39;
+"さらに表示するテキストがある場合の表示
+hi MoreMsg      color: #839496; font-size: 15px; background: #082E39;
+hi NonText      color: blue; min-height: 16px; padding-left: 2px;
+hi Preview      color: #839496; font-size: 15px;
+"決定を行うためのプロンプト
+hi Question     color: #839496; font-size: 15px; background: #082E39; margin: 1px 0 0 0;
+hi Indicator    color: blue;
+
+hi ErrorMsg     color: #D53985; background: #082E39; font-size: 15px;
+hi InfoMsg      color: #2EA19B; background: #082E39; font-size: 15px;
+hi WarningMsg   color: #D53985; background: #082E39; font-size: 15px;
+hi Message      white-space: normal; min-width: 100%; padding-left: 2em; text-indent: -2em; display: block; font-size: 15px;
+hi PromptText   color: #EFE9D5; background: #308CD2; font-size: 15px; padding: 1ex 1ex 0 1ex;
+
+"+----------------------------------------------------------------------------------------+
+" 補完リスト
+"+----------------------------------------------------------------------------------------+
+"補完リストの説明欄 ( 右側 )
+hi CompDesc              color: #2EA19B; width: 50%; max-width: 500px;
+hi CompGroup
+hi CompGroup:not(:first-of-type)	margin-top: .5em;
+"補完リストの favicon
+hi CompIcon              width: 16px; min-width: 16px; display: inline-block; margin-right: .5ex;
+hi CompIcon>img          max-width: 16px; max-height: 16px; vertical-align: middle;
+"補完リストの 1 行
+hi CompItem              font-size: 14px; line-height: 20px;
+hi CompItem>*            padding: 0 .5ex;
+"補完リストの選択している行
+hi CompItem[selected]    background: #174a58;
+"上にスクロール可能なことを示すマーク
+hi CompLess              text-align: center; height: 0; line-height: .5ex; padding-top: 1ex;
+"上にスクロール可能なことを示すマークとして使う文字
+hi CompLess::after       content: "\2303" /* Unicode up arrowhead */
+"下にスクロール可能なことを示すマーク
+hi CompMore              text-align: center; height: .5ex; line-height: .5ex; margin-bottom: -.5ex;
+"下にスクロール可能なことを示すマークとして使う文字
+hi CompMore::after       content: "\2304" /* Unicode down arrowhead */
+"補完リストでマッチしたテキスト
+hi Filter                color: #308CD2;
+hi CompMsg               font-style: italic; margin-left: 16px; font-size: 14px;
+"補完リストの結果欄 ( 左側 )
+hi CompResult            color: #7f9ead; width: 40%; max-width: 400px; overflow: hidden;
+"補完リストのタイトル
+hi CompTitle             color: #2EA19B; background: #f6f6f0; font-weight: bold; font-size: 15px; line-height: 25px;
+hi CompTitle>*           padding: 0 .5ex;
+"URL のブックマークタグ
+hi Tag                   color: blue;
+":bmarks  や :jumps  などのリストのタイトル
+hi Title                 color: #79baaf; font-size: 18px; background: #f6f6f0; font-weight: bold;
+"URL
+hi URL                   text-decoration: none; color: #2EA19B; background: inherit; font-size: 14px;
+hi URL:hover             text-decoration: underline; cursor: pointer;
+"URL のブックマークキーワード
+hi Keyword
+
+"+----------------------------------------------------------------------------------------+
+" リストの区切り線
+"+----------------------------------------------------------------------------------------+
+hi Gradient         height: 2px; margin-bottom: -1px; margin-top: -1px;
+hi GradientLeft     background-color: #4f3a20;
+hi GradientRight    background-color: #4f3a20;
+
+"+----------------------------------------------------------------------------------------+
+" ステータスバー
+"+----------------------------------------------------------------------------------------+
+"ステータスバー
+hi StatusLine           color: #2EA19B; background: #082E39; font-size: 15px;
+"安全でないウェブページにおけるステータスバー
+hi StatusLineBroken     color: black; background: #082E39; font-size: 15px; /* magenta */
+"安全なウェブページにおけるステータスバー
+hi StatusLineSecure     color: black; background: #082E39; font-size: 15px; /* green */
+hi StatusLineExtended   font-size: 15px;
+
+"+----------------------------------------------------------------------------------------+
+" その他の見た目
+"+----------------------------------------------------------------------------------------+
+"ウェブページの検索結果の強調表示
+hi Search            font-size: inherit; padding: 0; color: black; background-color: yellow; padding: 0;
+"新しくフレームが選択された際の表示
+hi FrameIndicator    background-color: red; opacity: 0.5; z-index: 999; position: fixed; top: 0; bottom: 0; left: 0; right: 0;
+"+----------------------------------------------------------------------------------------+
+" JavaScript
+"+----------------------------------------------------------------------------------------+
+hi Null      color: blue;
+hi Number    color: #626060;
+hi Object    color: maroon;
+hi String    color: green;
+hi Function  color: navy;
+hi Boolean   color: red;
+
+"読み込み完了メッセージ
+echo "vimperatorrc loaded."
+
+" [EOF]
