@@ -6,7 +6,7 @@
 // ==/VimperatorPlugin==
 //
 // Usage:
-// 
+//
 // <Leader>f   -> open current tab
 // <Leader>F   -> open new tab
 //
@@ -206,12 +206,12 @@ liberator.plugins.bookmarkToolbarHints = (function(){
 	return manager;
 })();
 
-liberator.modules.mappings.addUserMap([liberator.modules.modes.NORMAL], ['<Leader>f'],
+liberator.modules.mappings.addUserMap([liberator.modules.modes.NORMAL], ['<Leader>F'],
 	'Start Toolbar-HINTS (open current tab)',
 	function(){ liberator.plugins.bookmarkToolbarHints.startup(liberator.CURRENT_TAB); },
 	{ rhs: 'Bookmarks Toolbar-HINTS (current-tab)'}
 );
-liberator.modules.mappings.addUserMap([liberator.modules.modes.NORMAL], ['<Leader>F'],
+liberator.modules.mappings.addUserMap([liberator.modules.modes.NORMAL], ['<Leader>f'],
 	'Start Toolbar-HINTS (open new tab)',
 	function(){ liberator.plugins.bookmarkToolbarHints.startup(liberator.NEW_TAB); },
 	{ rhs: 'Bookmarks Toolbar-HINTS (new-tab)' }
