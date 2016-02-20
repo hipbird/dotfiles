@@ -52,4 +52,131 @@ set! ui.caretWidth=8
 " auto append anchor を起動時に有効化
 let g:auto_append_anchor = "true"
 
+"============================
+" Key mapping
+"============================
+" To Enable map <Space>
+js <<EOM
+  window.addEventListener('keypress',function (event) {
+    var code=event.charCode;
+    if ((liberator.mode === modes.INSERT && modes.extended === modes.MENU)
+    ||(liberator.mode ==modes.NORMAL && code==32)
+    ||(liberator.mode ==modes.COMMAND_LINE && code !=32)){
+      let map = mappings.get(liberator.mode, events.toString(event));
+      if (map) {
+        event.preventDefault();
+        event.stopPropagation();
+        map.execute();
+      }
+    }
+  },false);
+EOM
+
+" My Customization
+map <Space> <Leader>
+
+" google検索を手早くする
+nnoremap s :tabopen<Space>google<Space>
+
+" dをブラウザ標準の「タブを閉じる」にマッピング
+js<<EOM
+if (liberator.has("Win32")) {
+   liberator.execute("map d <C-w>");
+    } else if (liberator.has("MacUnix")) {
+    liberator.execute("map d <M-w>");
+    } else {
+    liberator.execute("map d <C-w>");
+    }
+EOM
+
+" 移動幅 _smoozie.js とは併用しない
+" nnoremap j 5j
+" nnoremap k 5k
+
+" h/l にタブ切り替えを割り当て
+nmap h <C-p>
+nmap l <C-n>
+
+" H/Lに左右を割り当てる
+map H <Left>
+map L <Right>
+
+"ソースを表示するキーを無効化
+map gf <Nop>
+
+"BackSpaceで戻るを無効化
+map <BS> <Nop>
+
+" Aの右+h/Aの右+lに戻る/進むを割り当てる
+js<<EOM
+if (liberator.has("Win32")) {
+   liberator.execute("map <C-h> <A-Left>");
+   liberator.execute("map <C-l> <A-Right>");
+    } else if (liberator.has("MacUnix")) {
+    liberator.execute("map <M-h> <A-Left>");
+    liberator.execute("map <M-l> <A-Right>");
+    } else {
+    liberator.execute("map <C-h> <A-Left>");
+    liberator.execute("map <C-l> <A-Right>");
+    }
+EOM
+
+" move cursor in command mode
+cnoremap <C-h> <Left>
+cnoremap <C-l> <Right>
+
+" cursor move
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
+
+" undo一覧から開く
+nnoremap U :undo<Space>
+let g:hint_tombloo_key = 'r'
+" ブラウザ再起動
+nnoremap <C-r> :restart<CR>
+"行頭/行末移動
+noremap gh  ^
+noremap gl  $
+
+inoremap <Space>h <HOME>
+inoremap <Space>l <END>
+
+" 選択文字列でググる(マウスとVISUALモードの選択時に対応)
+" pは文字列によってURLと判断されて誤爆するので明示的にGoogle検索を指定する
+js<<EOM
+if (liberator.has("Win32")) {
+    liberator.execute("nmap S <C-c>:tabopen<Space>google<Space><C-v><CR>");
+    liberator.execute("vmap S <C-c><Esc><Esc>:tabopen<Space>google<Space><C-v><CR>");
+    liberator.execute("nnoremap p :tabopen<Space>google<Space><C-v><CR>");
+    } else if (liberator.has("MacUnix")) {
+    liberator.execute("nmap S <M-c>:tabopen<Space>google<Space><M-v><CR>");
+    liberator.execute("vmap S <M-c><Esc><Esc>:tabopen<Space>google<Space><M-v><CR>");
+    liberator.execute("nnoremap p :tabopen<Space>google<Space><M-v><CR>");
+    } else {
+    liberator.execute("nmap S <C-c>:tabopen<Space>google<Space><C-v><CR>");
+    liberator.execute("vmap S <C-c><Esc><Esc>:tabopen<Space>google<Space><C-v><CR>");
+    liberator.execute("nnoremap p :tabopen<Space>google<Space><C-v><CR>");
+    }
+EOM
+
+" "Y" でページタイトルをヤンク
+nnoremap Y :js util.copyToClipboard(buffer.title, true)<CR>
+
+" =====================================
+"e でツリー型タブの表示をトグル
+js<<EOM
+liberator.globalVariables.toggler = {
+  tab:  ["set gui=tabs","set gui=notabs"],
+};
+EOM
+nnoremap e :toggle tab<CR>:js TreeStyleTabBrowserAutoHide.toggleMode();<CR>
+
+" _smooziee.js
+ let g:smooziee_scroll_amount="100"
+ let g:smooziee_scroll_interval="15"
+
+" Google Transrator(アドオン前提。動作確認：2.1.0.3m)
+command transrate javascript zol_bod_google_translator.ToolBarTranslatorClick()
+noremap <C-y> :transrate<CR>
+
 " [EOF]
