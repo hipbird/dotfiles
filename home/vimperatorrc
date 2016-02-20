@@ -1,4 +1,55 @@
-vim: set filetype=vim :
-
+" vim: set filetype=vim :
 " vimppm でプラグインを管理
 source ~/.vimperator/vimppm/plugin/vimppm.js
+
+vimppm '_libly.js'
+vimppm 'caret-hint.js'
+vimppm 'appendAnchor.js'
+vimppm '_smooziee.js'
+vimppm 'bookmarktoolbar-hint.js'
+vimppm 'migemized_find.js'
+vimppm 'auto-focus-frame.js'
+vimppm 'auto_detect_link.js'
+vimppm 'walk-input.js'
+vimppm 'tigberd/buftabs.js'
+
+" about:config
+"============================
+set! xpinstall.signatures.required=false
+" https://piro.sakura.ne.jp/xul/xpi/nightly/
+"============================
+" General
+"============================
+"ブラウザタイトルの変更
+set titlestring=
+" デフォルトの検索エンジン
+set defsearch=google
+" 入力欄に自動フォーカスしない
+set focuscontent
+" ビープ,ビジュアルベルを無効
+set visualbell
+highlight Bell display:none
+"ページ全体で検索語を強調表示
+set hlsearch
+"コマンド入力時にコマンド名を自動補完
+set wildoptions=auto
+" :oなどでの補完候補をサーチエンジン、履歴に限定
+set complete=sl
+" Hintモードでアルファベット使用
+set hintchars=qzasfghjkl
+" 検索時、大文字が含まれている場合にのみ case sensitiveにする
+set ignorecase
+set smartcase
+
+set gui=nonavigation
+" ツールバーはアドオンとタブのみ表示
+"set gui=addons,nobookmarks,nomenu,nonavigation,tabs
+" commandモードでIMEオフ
+style! -name=commandline-ime chrome://* #liberator-commandline-command input {ime-mode: inactive;}
+" キャレット幅を変更
+set! ui.caretWidth=8
+
+" auto append anchor を起動時に有効化
+let g:auto_append_anchor = "true"
+
+" [EOF]
