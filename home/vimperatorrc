@@ -179,4 +179,117 @@ nnoremap e :toggle tab<CR>:js TreeStyleTabBrowserAutoHide.toggleMode();<CR>
 command transrate javascript zol_bod_google_translator.ToolBarTranslatorClick()
 noremap <C-y> :transrate<CR>
 
+"============================
+" colorscheme
+"============================
+"----------------------------
+" Hint
+"----------------------------
+hi Hint font-family: Helvetica Neue; font-size: 16px; font-weight:bold; text-shadow: -1px -1px 1.5px #363132, 1px -1px 1.5px #363132, -1px 1px 1.5px #363132, 1px 1px 1.5px #363132; color: #F2C68B;
+hi HintElem color: gray; background-color: #8AC6F2;
+hi HintActive color: black; background-color: #95E454;
+
+hi ErrorMsg color:white; background-color: #ec6aa1;
+
+
+"コマンドライン
+hi CmdLine      font-family: Ricty for Powerline; font-size: 15px; line-height:30px; padding: 1px; background: #2C3B50;
+hi CmdOutput    white-space: pre;
+"コマンドラインの通常テキスト
+hi Normal       color: #839496; font-size: 15px; background: #082E39;
+"コマンドラインのモード表示
+hi ModeMsg      color: #839496; font-size: 15px; background: #082E39;
+"さらに表示するテキストがある場合の表示
+hi MoreMsg      color: #839496; font-size: 15px; background: #082E39;
+hi NonText      color: blue; min-height: 16px; padding-left: 2px;
+hi Preview      color: #839496; font-size: 15px;
+"決定を行うためのプロンプト
+hi Question     color: #839496; font-size: 15px; background: #082E39; margin: 1px 0 0 0;
+hi Indicator    color: blue;
+
+hi ErrorMsg     color: #D53985; background: #082E39; font-size: 15px;
+hi InfoMsg      color: #2EA19B; background: #082E39; font-size: 15px;
+hi WarningMsg   color: #D53985; background: #082E39; font-size: 15px;
+hi Message      white-space: normal; min-width: 100%; padding-left: 2em; text-indent: -2em; display: block; font-size: 15px;
+hi PromptText   color: #EFE9D5; background: #308CD2; font-size: 15px; padding: 1ex 1ex 0 1ex;
+
+"+----------------------------------------------------------------------------------------+
+" 補完リスト
+"+----------------------------------------------------------------------------------------+
+"補完リストの説明欄 ( 右側 )
+hi CompDesc              color: #2EA19B; width: 50%; max-width: 500px;
+hi CompGroup
+hi CompGroup:not(:first-of-type)	margin-top: .5em;
+"補完リストの favicon
+hi CompIcon              width: 16px; min-width: 16px; display: inline-block; margin-right: .5ex;
+hi CompIcon>img          max-width: 16px; max-height: 16px; vertical-align: middle;
+"補完リストの 1 行
+hi CompItem              font-size: 14px; line-height: 20px;
+hi CompItem>*            padding: 0 .5ex;
+"補完リストの選択している行
+hi CompItem[selected]    background: #174a58;
+"上にスクロール可能なことを示すマーク
+hi CompLess              text-align: center; height: 0; line-height: .5ex; padding-top: 1ex;
+"上にスクロール可能なことを示すマークとして使う文字
+hi CompLess::after       content: "\2303" /* Unicode up arrowhead */
+"下にスクロール可能なことを示すマーク
+hi CompMore              text-align: center; height: .5ex; line-height: .5ex; margin-bottom: -.5ex;
+"下にスクロール可能なことを示すマークとして使う文字
+hi CompMore::after       content: "\2304" /* Unicode down arrowhead */
+"補完リストでマッチしたテキスト
+hi Filter                color: #308CD2;
+hi CompMsg               font-style: italic; margin-left: 16px; font-size: 14px;
+"補完リストの結果欄 ( 左側 )
+hi CompResult            color: #7f9ead; width: 40%; max-width: 400px; overflow: hidden;
+"補完リストのタイトル
+hi CompTitle             color: #2EA19B; background: #f6f6f0; font-weight: bold; font-size: 15px; line-height: 25px;
+hi CompTitle>*           padding: 0 .5ex;
+"URL のブックマークタグ
+hi Tag                   color: blue;
+":bmarks  や :jumps  などのリストのタイトル
+hi Title                 color: #79baaf; font-size: 18px; background: #f6f6f0; font-weight: bold;
+"URL
+hi URL                   text-decoration: none; color: #2EA19B; background: inherit; font-size: 14px;
+hi URL:hover             text-decoration: underline; cursor: pointer;
+"URL のブックマークキーワード
+hi Keyword
+
+"+----------------------------------------------------------------------------------------+
+" リストの区切り線
+"+----------------------------------------------------------------------------------------+
+hi Gradient         height: 2px; margin-bottom: -1px; margin-top: -1px;
+hi GradientLeft     background-color: #4f3a20;
+hi GradientRight    background-color: #4f3a20;
+
+"+----------------------------------------------------------------------------------------+
+" ステータスバー
+"+----------------------------------------------------------------------------------------+
+"ステータスバー
+hi StatusLine           color: #2EA19B; background: #082E39; font-size: 15px;
+"安全でないウェブページにおけるステータスバー
+hi StatusLineBroken     color: black; background: #082E39; font-size: 15px; /* magenta */
+"安全なウェブページにおけるステータスバー
+hi StatusLineSecure     color: black; background: #082E39; font-size: 15px; /* green */
+hi StatusLineExtended   font-size: 15px;
+
+"+----------------------------------------------------------------------------------------+
+" その他の見た目
+"+----------------------------------------------------------------------------------------+
+"ウェブページの検索結果の強調表示
+hi Search            font-size: inherit; padding: 0; color: black; background-color: yellow; padding: 0;
+"新しくフレームが選択された際の表示
+hi FrameIndicator    background-color: red; opacity: 0.5; z-index: 999; position: fixed; top: 0; bottom: 0; left: 0; right: 0;
+"+----------------------------------------------------------------------------------------+
+" JavaScript
+"+----------------------------------------------------------------------------------------+
+hi Null      color: blue;
+hi Number    color: #626060;
+hi Object    color: maroon;
+hi String    color: green;
+hi Function  color: navy;
+hi Boolean   color: red;
+
+"読み込み完了メッセージ
+echo "vimperatorrc loaded."
+
 " [EOF]
