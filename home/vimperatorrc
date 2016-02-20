@@ -11,7 +11,6 @@ vimppm 'migemized_find.js'
 vimppm 'auto-focus-frame.js'
 vimppm 'auto_detect_link.js'
 vimppm 'walk-input.js'
-vimppm 'tigberd/buftabs.js'
 
 " about:config
 "============================
