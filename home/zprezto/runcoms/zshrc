@@ -24,3 +24,14 @@ fi
 export DOT_REPO="https://HipBird@bitbucket.org/HipBird/dotfiles.git"
 export DOT_DIR="$HOME/.dotfiles"
 source $HOME/.dotfiles/bin/dot/dot.sh
+
+# ranger でサブシェルをネストしない
+function r() {
+    if [ -z "$RANGER_LEVEL" ]; then
+        ranger $@
+    else
+        exit
+    fi
+}
+# ranger から抜けた時オートcd
+source $HOME/.config/ranger/plugin/bash_automatic_cd.sh
