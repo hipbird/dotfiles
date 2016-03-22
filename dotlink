@@ -43,3 +43,4 @@ home/config/ranger,.config/ranger
 home/bash_profile,.bash_profile
 home/vimperator/vimppm,.vimperator/vimppm
 home/vimperatorrc,.vimperatorrc
+home/config/nvim,.config/nvim

@@ -25,6 +25,9 @@ export DOT_REPO="https://HipBird@bitbucket.org/HipBird/dotfiles.git"
 export DOT_DIR="$HOME/.dotfiles"
 source $HOME/.dotfiles/bin/dot/dot.sh
 
+# neovim の設定ファイル
+export XDG_CONFIG_HOME=$HOME/.config
+
 # ranger でサブシェルをネストしない
 function r() {
     if [ -z "$RANGER_LEVEL" ]; then
