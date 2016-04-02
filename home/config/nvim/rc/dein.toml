@@ -57,7 +57,6 @@ repo = 'altercation/vim-colors-solarized'
 
 [[plugins]]
 repo = 'hail2u/vim-css3-syntax'
-on_ft = 'css'
 
 [[plugins]]
 repo = 'groenewege/vim-less'
