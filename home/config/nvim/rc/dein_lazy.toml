@@ -112,3 +112,8 @@ on_map = '<Plug>'
 [[plugins]]
 repo = 'airblade/vim-gitgutter'
 on_path = '.*'
+
+[[plugins]]
+repo = 'Valloric/MatchTagAlways'
+on_ft = ['html', 'xhtml', 'xml', 'jinja', 'php']
+

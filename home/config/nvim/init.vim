@@ -449,13 +449,13 @@ if dein#tap('deoplete.nvim') && has('nvim') "{{{
 endif "}}}
 
 if dein#tap('neosnippet.vim') "{{{
-  imap <silent>L     <Plug>(neosnippet_jump_or_expand)
-  smap <silent>L     <Plug>(neosnippet_jump_or_expand)
-  xmap <silent>L     <Plug>(neosnippet_expand_target)
-  imap <silent>K     <Plug>(neosnippet_expand_or_jump)
-  smap <silent>K     <Plug>(neosnippet_expand_or_jump)
-  imap <silent>G     <Plug>(neosnippet_expand)
-  xmap <silent>o     <Plug>(neosnippet_register_oneshot_snippet)
+  " imap <silent>L     <Plug>(neosnippet_jump_or_expand)
+  " smap <silent>L     <Plug>(neosnippet_jump_or_expand)
+  " xmap <silent>L     <Plug>(neosnippet_expand_target)
+  " imap <silent>K     <Plug>(neosnippet_expand_or_jump)
+  " smap <silent>K     <Plug>(neosnippet_expand_or_jump)
+  " imap <silent>G     <Plug>(neosnippet_expand)
+  " xmap <silent>o     <Plug>(neosnippet_register_oneshot_snippet)
 
   let g:neosnippet#enable_snipmate_compatibility = 1
   let g:neosnippet#enable_complete_done = 1
@@ -623,5 +623,26 @@ if dein#tap('vim-marked') "{{{
   if has('mac')
     let g:marked_app = "Marked 2"
   endif
+endif"}}}
+
+if dein#tap('MatchTagAlways') "{{{
+  "MatchTagAlwaysを使用するファイルタイプ
+  let g:mta_filetypes = {
+        \ 'html' : 1,
+        \ 'xhtml' : 1,
+        \ 'xml' : 1,
+        \ 'jinja' : 1,
+        \ 'php' : 1,
+        \}
+autocmd VimEnter,WinEnter,BufRead * hi MatchParen ctermfg=248 ctermbg=23 guifg=black guibg=lightgreen
+  nnoremap <leader>% :MtaJumpToOtherTag<cr>
+  " let g:mta_use_matchparen_group = 0
+  " let g:mta_set_default_matchtag_color = 0
+  " autocmd VimEnter,WinEnter,BufRead * highlight MatchTag ctermfg=248 ctermbg=23 guifg=black guibg=lightgreen
+
+endif"}}}
+
+if dein#tap('vim-splash') "{{{
+  let g:splash#path = $HOME . '/.config/nvim/rc/vimgirl.txt'
 endif"}}}
 " }}}
