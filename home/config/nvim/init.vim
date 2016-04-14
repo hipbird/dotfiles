@@ -11,7 +11,6 @@
 "                               \/__/         \|__|         \/__/
 
 " Encoding {{{
-set encoding=utf-8
 scriptencoding utf-8
 " }}}
 if &compatible
@@ -221,11 +220,11 @@ set smartindent   "適切にインデントを調整
 set shiftround    "インデントを'shiftwidth'の倍数に丸める
 set modeline      "モードラインを有効化
 
-"if has("autocmd")
+if !has('vim_starting')
 "ファイルタイプの検索を有効にする
-"  filetype plugin on
+  filetype plugin on
 "そのファイルタイプにあわせたインデントを利用する
-"  filetype indent on
+  filetype indent on
 
 "  autocmd FileType apache     setlocal sw=4 sts=4 ts=4 et
 "  autocmd FileType c          setlocal sw=4 sts=4 ts=4 et
@@ -242,7 +241,7 @@ set modeline      "モードラインを有効化
 "  autocmd FileType xhtml      setlocal sw=4 sts=4 ts=4 et
 "  autocmd FileType xml        setlocal sw=4 sts=4 ts=4 et
 "  autocmd FileType zsh        setlocal sw=4 sts=4 ts=4 et
-"endif
+endif
 
 " ソフトラップもインデント
 set wrap           "ソフトラップを有効に
@@ -300,6 +299,19 @@ set keywordprg=:help
 set helplang& helplang=ja
 
 " }}}
+
+ " ファイル保存時に行末のスペースを削除する
+ " ただしマークダウンファイルを除く
+let g:does_remove_trailing_white_space = 1
+au MyAutoGroup BufWritePre * call s:removeTrailingWhiteSpace()
+func! s:removeTrailingWhiteSpace()
+  if &ft != 'markdown' && g:does_remove_trailing_white_space == 1
+    :%s/\s\+$//ge
+  endif
+endf
+
+highlight TrailingSpaces ctermbg=magenta guibg=#FF0000
+au BufNewFile,BufRead * call matchadd('TrailingSpaces', ' \{-1,}$')
 
 " ##### FileType ##### {{{
 autocmd MyAutoGroup FileType,Syntax,BufEnter,BufWinEnter *
@@ -373,11 +385,6 @@ nmap <Leader>p "+p
 vmap <Leader>p "+p
 
 "ノーマルモード {{{
-"カーソルを表示行で移動する。論理行移動は<C-n>,<C-p>
-nnoremap j gj
-nnoremap k gk
-nnoremap <Down> gj
-nnoremap <Up>   gk
 "ノーマルモード中にEnterで改行
 noremap <CR> i<CR><Esc>
 
@@ -401,154 +408,10 @@ xnoremap <expr> l foldclosed(line('.')) != -1 ? 'zogv0' : 'l'
 
 " ##### プラグイン ##### {{{
 
-if dein#tap('deoplete.nvim') && has('nvim') "{{{
-  let g:deoplete#enable_at_startup = 1
-
-  set completeopt+=noinsert
-
-  " <TAB>: completion.
-  imap <silent><expr> <TAB>
-        \ pumvisible() ? "\<C-n>" :
-        \ <SID>check_back_space() ? "\<TAB>" :
-        \ deoplete#mappings#manual_complete()
-  function! s:check_back_space() abort "{{{
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-  endfunction"}}}
-
-  " <S-TAB>: completion back.
-  inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
-
-  " <C-h>, <BS>: close popup and delete backword char.
-  inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
-  inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
-
-  inoremap <expr><C-g> deoplete#mappings#undo_completion()
-  " <C-l>: redraw candidates
-  inoremap <expr><C-l>       deoplete#mappings#refresh()
-
-  " <CR>: close popup and save indent.
-  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-  function! s:my_cr_function() abort
-    return deoplete#mappings#close_popup() . "\<CR>"
-  endfunction
-
-  inoremap <expr> '  pumvisible() ? deoplete#mappings#close_popup() : "'"
-
-  let g:deoplete#keyword_patterns = {}
-  let g:deoplete#keyword_patterns._ = '[a-zA-Z_]\k*\(?'
-  let g:deoplete#keyword_patterns.tex = '[^\w|\s][a-zA-Z_]\w*'
-
-  let g:deoplete#omni#input_patterns = {}
-  let g:deoplete#omni#input_patterns.python = ''
-  let g:deoplete#omni#functions = {}
-  let g:deoplete#omni#functions.lua = 'xolox#lua#omnifunc'
-
-  let g:deoplete#enable_refresh_always = 1
-  let g:deoplete#enable_camel_case = 1
-endif "}}}
-
-if dein#tap('neosnippet.vim') "{{{
-  " imap <silent>L     <Plug>(neosnippet_jump_or_expand)
-  " smap <silent>L     <Plug>(neosnippet_jump_or_expand)
-  " xmap <silent>L     <Plug>(neosnippet_expand_target)
-  " imap <silent>K     <Plug>(neosnippet_expand_or_jump)
-  " smap <silent>K     <Plug>(neosnippet_expand_or_jump)
-  " imap <silent>G     <Plug>(neosnippet_expand)
-  " xmap <silent>o     <Plug>(neosnippet_register_oneshot_snippet)
-
-  let g:neosnippet#enable_snipmate_compatibility = 1
-  let g:neosnippet#enable_complete_done = 1
-  let g:neosnippet#expand_word_boundary = 1
-
-  " let g:snippets_dir = '~/.vim/snippets/,~/.vim/bundle/snipmate/snippets/'
-  let g:neosnippet#snippets_directory = '~/.vim/snippets'
-
-  inoremap <silent> (( <C-r>=neosnippet#anonymous('\left(${1}\right)${0}')<CR>
-endif "}}}
-
-if dein#tap('echodoc.vim') "{{{
-  let g:echodoc_enable_at_startup = 1
-endif "}}}
-
-if dein#tap('vim-operator-surround') "{{{
-  nmap <silent>ys <Plug>(operator-surround-append)a
-  nmap <silent>ds <Plug>(operator-surround-delete)a
-  nmap <silent>cs <Plug>(operator-surround-replace)a
-endif "}}}
-
-if dein#tap('open-browser.vim') "{{{
-  nmap <Leader>w <Plug>(openbrowser-smart-search)
-  vmap <Leader>w <Plug>(openbrowser-smart-search)
-endif "}}}
-
-if dein#tap('accelerated-jk') "{{{
-  nmap <silent>j <Plug>(accelerated_jk_gj)
-  nmap gj j
-  nmap <silent>k <Plug>(accelerated_jk_gk)
-  nmap gk k
-endif "}}}
-
-if dein#tap('vim-operator-replace') "{{{
-  xmap p <Plug>(operator-replace)
-endif "}}}
-
-if dein#tap('glowshi-ft.vim') "{{{
-  let g:glowshi_ft_no_default_key_mappings = 1
-  map f <Plug>(glowshi-ft-f)
-  map F <Plug>(glowshi-ft-F)
-
-  let g:glowshi_ft_timeoutlen = 1000
-endif "}}}
-
 if dein#tap('vim-findent') "{{{
   " Note: It is too slow.
   autocmd MyAutoGroup BufRead * Findent! --no-warnings
-  " nnoremap <silent><Leader>i    :<C-u>Findent! --no-warnings<CR>
-endif "}}}
-
-if dein#tap('vim-easymotion') "{{{
-  let g:EasyMotion_do_mapping = 0
-  nmap s <Plug>(easymotion-s2)
-  xmap s <Plug>(easymotion-s2)
-  omap z <Plug>(easymotion-s2)
-  nmap g/ <Plug>(easymotion-sn)
-  xmap g/ <Plug>(easymotion-sn)
-  omap g/ <Plug>(easymotion-tn)
-  let g:EasyMotion_smartcase = 1
-  map <Leader>j <Plug>(easymotion-j)
-  map <Leader>k <Plug>(easymotion-k)
-  let g:EasyMotion_startofline = 0
-  let g:EasyMotion_keys = 'QZASDFGHJKL'
-  let g:EasyMotion_use_upper = 1
-  let g:EasyMotion_enter_jump_first = 1
-  let g:EasyMotion_space_jump_first = 1
-  let g:EasyMotion_use_migemo = 0
-
-  hi link EasyMotionTarget Special
-  hi link EasyMotionShade  Comment
-  hi link EasyMotionTarget2First Type
-  hi link EasyMotionTarget2Second Type
-endif"}}}
-
-if dein#tap('lightline.vim') "{{{
-  " lightline.vim
-  let g:lightline = {
-        \ 'separator': {'left': '⮀', 'right': '⮂'},
-        \ 'subseparator': {'left': '⮁', 'right': '⮃'},
-        \ 'colorscheme': 'wombat'
-        \ }
-endif"}}}
-
-if dein#tap('vim-indent-guides') "{{{
-  let g:indent_guides_enable_on_vim_startup=1
-  let g:indent_guides_auto_colors = 0
-  let g:indent_guides_start_level = 2
-  let g:indent_guides_guide_size = 2
-  let g:indent_guides_space_guides=1
-  let g:indent_guides_color_change_percent = 30
-  autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd guibg='#23272A' ctermbg=0
-  autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg='#202224'
+  "nnoremap <silent> [Space]i    :<C-u>Findent! --no-warnings<CR>
 endif"}}}
 
 if dein#tap('tcomment_vim') "{{{
@@ -568,27 +431,6 @@ if dein#tap('tcomment_vim') "{{{
   au FileType php imap <buffer><C-_>e :TCommentAs php_surround_echo<CR>
 endif"}}}
 
-if dein#tap('vim-trailing-whitespace') "{{{
-  " ファイル保存時に行末のスペースを削除する
-  " ただしマークダウンファイルを除く
-  fun! StripTrailingWhiteSpace()
-    " don't strip on these filetypes
-    if &ft =~ 'markdown'
-      return
-    endif
-    :FixWhitespace
-  endfun
-  autocmd bufwritepre * :call StripTrailingWhiteSpace()
-endif"}}}
-
-if dein#tap('vim-smartword') "{{{
-  " wやeでの単語移動を賢く
-  map w <Plug>(smartword-w)
-  map b <Plug>(smartword-b)
-  map e <Plug>(smartword-e)
-  map ge <Plug>(smartword-ge)
-endif"}}}
-
 if dein#tap('vim-expand-region') "{{{
   vmap v <Plug>(expand_region_expand)
   vmap <C-v> <Plug>(expand_region_shrink)
@@ -606,43 +448,5 @@ if dein#tap('vim-expand-region') "{{{
         \ 'ie'  :1,
         \ }
 endif"}}}
-
-if dein#tap('emmet-vim') "{{{
-  let g:user_emmet_leader_key = '<C-E>'
-endif"}}}
-
-if dein#tap('vim-gitgutter') "{{{
-
-  let g:gitgutter_realtime = 0
-  let g:gitgutter_eager = 0
-  nnoremap <Leader>gg :<C-u>GitGutterToggle<CR>
-  nnoremap <Leader>gh :<C-u>GitGutterLineHighlightsToggle<CR>
-endif"}}}
-
-if dein#tap('vim-marked') "{{{
-  if has('mac')
-    let g:marked_app = "Marked 2"
-  endif
-endif"}}}
-
-if dein#tap('MatchTagAlways') "{{{
-  "MatchTagAlwaysを使用するファイルタイプ
-  let g:mta_filetypes = {
-        \ 'html' : 1,
-        \ 'xhtml' : 1,
-        \ 'xml' : 1,
-        \ 'jinja' : 1,
-        \ 'php' : 1,
-        \}
-autocmd VimEnter,WinEnter,BufRead * hi MatchParen ctermfg=248 ctermbg=23 guifg=black guibg=lightgreen
-  nnoremap <leader>% :MtaJumpToOtherTag<cr>
-  " let g:mta_use_matchparen_group = 0
-  " let g:mta_set_default_matchtag_color = 0
-  " autocmd VimEnter,WinEnter,BufRead * highlight MatchTag ctermfg=248 ctermbg=23 guifg=black guibg=lightgreen
-
-endif"}}}
-
-if dein#tap('vim-splash') "{{{
-  let g:splash#path = $HOME . '/.config/nvim/rc/vimgirl.txt'
-endif"}}}
 " }}}
+
