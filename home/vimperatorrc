@@ -106,14 +106,14 @@ map gf <Nop>
 "BackSpaceで戻るを無効化
 map <BS> <Nop>
 
-" Aの右+h/Aの右+lに戻る/進むを割り当てる
+" Aの左+h/Aの左+lに戻る/進むを割り当てる
 js<<EOM
 if (liberator.has("Win32")) {
    liberator.execute("map <C-h> <A-Left>");
    liberator.execute("map <C-l> <A-Right>");
     } else if (liberator.has("MacUnix")) {
-    liberator.execute("map <M-h> <A-Left>");
-    liberator.execute("map <M-l> <A-Right>");
+    liberator.execute("map <C-h> <A-Left>");
+    liberator.execute("map <C-l> <A-Right>");
     } else {
     liberator.execute("map <C-h> <A-Left>");
     liberator.execute("map <C-l> <A-Right>");
@@ -121,18 +121,16 @@ if (liberator.has("Win32")) {
 EOM
 
 " move cursor in command mode
-cnoremap <C-h> <Left>
-cnoremap <C-l> <Right>
+" cnoremap <C-h> <Left>
+" cnoremap <C-l> <Right>
 
 " cursor move
-inoremap <C-h> <Left>
-inoremap <C-l> <Right>
+" inoremap <C-h> <Left>
+" inoremap <C-l> <Right>
 
 " undo一覧から開く
 nnoremap U :undo<Space>
 let g:hint_tombloo_key = 'r'
-" ブラウザ再起動
-nnoremap <C-r> :restart<CR>
 "行頭/行末移動
 noremap gh  ^
 noremap gl  $
