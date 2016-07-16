@@ -67,7 +67,8 @@ zplug 'junegunn/fzf-bin', \
     from:gh-r, \
     rename-to:fzf
 
-zplug 'zsh-users/zsh-syntax-highlighting', nice:10
+zplug 'zsh-users/zsh-syntax-highlighting', \
+    nice:19
 
 zplug 'zsh-users/zsh-completions'
 
