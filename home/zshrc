@@ -1,0 +1,97 @@
+# Lines configured by zsh-newuser-install
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+# End of lines configured by zsh-newuser-install
+# The following lines were added by compinstall
+zstyle :compinstall filename '$HOME/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+
+
+# -------------------------------------
+# anyenv
+# -------------------------------------
+if [ -d ${HOME}/.anyenv ] ; then
+    export PATH="$HOME/.anyenv/bin:$PATH"
+    eval "$(anyenv init -)"
+    for D in `ls $HOME/.anyenv/envs`
+    do
+        export PATH="$HOME/.anyenv/envs/$D/shims:$PATH"
+    done
+fi
+
+
+# -------------------------------------
+# ranger
+# -------------------------------------
+# サブシェルを入れ子にしない
+function ranger() {
+    if [ -z "$RANGER_LEVEL" ]; then
+        /usr/local/bin/ranger $@
+    else
+        exit
+    fi
+}
+
+[ -n "$RANGER_LEVEL" ] && PS1="$PS1"'(in ranger) '
+
+# -------------------------------------
+# dot
+# -------------------------------------
+
+export DOT_REPO="https://HipBird@bitbucket.org/HipBird/dotfiles.git"
+export DOT_DIR="$HOME/.dotfiles"
+
+# -------------------------------------
+# zplug
+# -------------------------------------
+# zplugがないときはクローンする
+source ~/.zplug/init.zsh || { git clone https://github.com/b4b4r07/zplug.git ~/.zplug && source ~/.zplug/init.zsh }
+
+zplug 'b4b4r07/zplug', at:v2  # don't forget to zplug update --self && zplug update
+
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(status context dir vcs)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
+POWERLEVEL9K_SHORTEN_DIR_LENGTH=1
+POWERLEVEL9K_SHORTEN_DELIMITER=""
+POWERLEVEL9K_SHORTEN_STRATEGY="truncate_from_right"
+export DEFAULT_USER="$USER"
+
+zplug 'bhilburn/powerlevel9k', use:powerlevel9k.zsh-theme
+
+zplug 'junegunn/fzf-bin', \
+    as:command, \
+    from:gh-r, \
+    rename-to:fzf
+
+zplug 'zsh-users/zsh-syntax-highlighting', nice:10
+
+zplug 'zsh-users/zsh-completions'
+
+zplug 'zsh-users/zsh-autosuggestions'
+
+zplug 'zsh-users/zsh-history-substring-search'
+
+zplug 'b4b4r07/enhancd', \
+    use:init.sh
+
+zplug "ssh0/dot", \
+    use:"*.sh"
+
+# check コマンドで未インストール項目があるかどうか verbose にチェックし
+# false のとき（つまり未インストール項目がある）y/N プロンプトで
+# インストールする
+if ! zplug check --verbose; then
+    printf 'Install? [y/N]: '
+    if read -q; then
+        echo; zplug install
+    fi
+fi
+
+# プラグインを読み込み、コマンドにパスを通す
+zplug load --verbose
+
+export EDITOR=nvim
