@@ -10,7 +10,6 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
-
 # -------------------------------------
 # anyenv
 # -------------------------------------
@@ -22,7 +21,6 @@ if [ -d ${HOME}/.anyenv ] ; then
         export PATH="$HOME/.anyenv/envs/$D/shims:$PATH"
     done
 fi
-
 
 # -------------------------------------
 # ranger
@@ -46,6 +44,174 @@ export DOT_REPO="https://HipBird@bitbucket.org/HipBird/dotfiles.git"
 export DOT_DIR="$HOME/.dotfiles"
 
 # -------------------------------------
+# Utilities
+# -------------------------------------
+
+# has_command returns true if $1 as a shell command exists
+has.command() {
+    (( $+commands[${1:?too few argument}] ))
+    return $status
+}
+
+# has_command returns true if $1 as a shell function exists
+has.function() {
+    (( $+functions[${1:?too few argument}] ))
+    return $status
+}
+
+# has_command returns true if $1 as a builtin command exists
+has.builtin() {
+    (( $+builtins[${1:?too few argument}] ))
+    return $status
+}
+
+# has_command returns true if $1 as an alias exists
+has.alias() {
+    (( $+aliases[${1:?too few argument}] ))
+    return $status
+}
+
+# has_command returns true if $1 as an alias exists
+has.galias() {
+    (( $+galiases[${1:?too few argument}] ))
+    return $status
+}
+
+# has returns true if $1 exists
+has() {
+    has.function "$1" || \
+        has.command "$1" || \
+        has.builtin "$1" || \
+        has.alias "$1" || \
+        has.galias "$1"
+
+    return $status
+}
+
+# -------------------------------------
+# aliases
+# -------------------------------------
+
+if has 'git'; then
+    alias gst='git status'
+fi
+
+# Common aliases
+alias ..='cd ..'
+
+# Use if colordiff exists
+if has 'colordiff'; then
+    alias diff='colordiff -u'
+else
+    alias diff='diff -u'
+fi
+
+pygmentize_alias() {
+    if has "pygmentize"; then
+        local get_styles styles style
+        get_styles="from pygments.styles import get_all_styles
+        styles = list(get_all_styles())
+        print('\n'.join(styles))"
+        styles=( $(sed -e 's/^  *//g' <<<"$get_styles" | python) )
+
+        style=${${(M)styles:#monokai}:-default}
+        cat_alias "$@" | pygmentize -O style="$style" -f console256 -g
+    else
+        cat -
+    fi
+}
+alias -g P="| pygmentize_alias"
+
+mru() {
+    local -a f
+    f=(
+    ~/.vim_mru_files(N)
+    )
+    if [[ $#f -eq 0 ]]; then
+        echo "There is no available MRU Vim plugins" >&2
+        return 1
+    fi
+
+    local cmd q k res
+    local line ok make_dir i arr
+    local get_styles styles style
+    while : ${make_dir:=0}; ok=("${ok[@]:-dummy_$RANDOM}"); cmd="$(
+        cat <$f \
+            | while read line; do [ -e "$line" ] && echo "$line"; done \
+            | while read line; do [ "$make_dir" -eq 1 ] && echo "${line:h}/" || echo "$line"; done \
+            | awk '!a[$0]++' \
+            | perl -pe 's/^(\/.*\/)(.*)$/\033[34m$1\033[m$2/' \
+            | fzf --ansi --multi --query="$q" \
+            --no-sort --exit-0 --prompt="MRU> " \
+            --print-query --expect=ctrl-v,ctrl-x,ctrl-l,ctrl-q,ctrl-r,"?"
+            )"; do
+        q="$(head -1 <<< "$cmd")"
+        k="$(head -2 <<< "$cmd" | tail -1)"
+        res="$(sed '1,2d;/^$/d' <<< "$cmd")"
+        [ -z "$res" ] && continue
+        case "$k" in
+            "?")
+                cat <<HELP > /dev/tty
+usage: vim_mru_files
+    list up most recently files
+keybind:
+  ctrl-q  output files and quit
+  ctrl-l  less files under the cursor
+  ctrl-v  vim files under the cursor
+  ctrl-r  change view type
+  ctrl-x  remove files (two-step)
+HELP
+                return 1
+                ;;
+            ctrl-r)
+                if [ $make_dir -eq 1 ]; then
+                    make_dir=0
+                else
+                    make_dir=1
+                fi
+                continue
+                ;;
+            ctrl-l)
+                export LESS='-R -f -i -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]'
+                arr=("${(@f)res}")
+                if [[ -d ${arr[1]} ]]; then
+                    ls -l "${(@f)res}" < /dev/tty | less > /dev/tty
+                else
+                    if has "pygmentize"; then
+                        get_styles="from pygments.styles import get_all_styles
+                        styles = list(get_all_styles())
+                        print('\n'.join(styles))"
+                        styles=( $(sed -e 's/^  *//g' <<<"$get_styles" | python) )
+                        style=${${(M)styles:#monokai}:-default}
+                        export LESSOPEN="| pygmentize -O style=$style -f console256 -g %s"
+                    fi
+                    less "${(@f)res}" < /dev/tty > /dev/tty
+                fi
+                ;;
+            ctrl-x)
+                if [[ ${(j: :)ok} == ${(j: :)${(@f)res}} ]]; then
+                    eval '${${${(M)${+commands[gomi]}#1}:+gomi}:-rm} "${(@f)res}" 2>/dev/null'
+                    ok=()
+                else
+                    ok=("${(@f)res}")
+                fi
+                ;;
+            ctrl-v)
+                nvim -p "${(@f)res}" < /dev/tty > /dev/tty
+                ;;
+            ctrl-q)
+                echo "$res" < /dev/tty > /dev/tty
+                return $status
+                ;;
+            *)
+                echo "${(@f)res}"
+                break
+                ;;
+        esac
+    done
+}
+
+# -------------------------------------
 # zplug
 # -------------------------------------
 # zplugがないときはクローンする
@@ -62,11 +228,17 @@ export DEFAULT_USER="$USER"
 
 zplug 'bhilburn/powerlevel9k', use:powerlevel9k.zsh-theme
 
+# commands
 zplug 'junegunn/fzf-bin', \
     as:command, \
     from:gh-r, \
     rename-to:fzf
 
+zplug "b4b4r07/zsh-gomi", \
+    as:command, \
+    use:bin/gomi
+
+# plugins
 zplug 'zsh-users/zsh-syntax-highlighting', \
     nice:19
 
@@ -81,6 +253,9 @@ zplug 'b4b4r07/enhancd', \
 
 zplug "ssh0/dot", \
     use:"*.sh"
+
+zplug "urbainvaes/fzf-marks"
+    as:command, \
 
 # check コマンドで未インストール項目があるかどうか verbose にチェックし
 # false のとき（つまり未インストール項目がある）y/N プロンプトで
