@@ -1,16 +1,16 @@
 [[plugins]]
 repo = 'Shougo/echodoc.vim'
-on_i = 1
-hook_add = 'let g:echodoc_enable_at_startup = 1'
+on_event = 'CompleteDone'
+hook_source = 'call echodoc#enable()'
 
-[[plugins]]
-repo = 'Shougo/deoplete.nvim'
-depends = 'context_filetype.vim'
-on_i = 1
-hook_source = '''
-  let g:deoplete#enable_at_startup = 1
-  source ~/.config/nvim/rc/plugins/deoplete.rc.vim
-'''
+# [[plugins]]
+# repo = 'Shougo/deoplete.nvim'
+# depends = 'context_filetype.vim'
+# on_i = 1
+# hook_source = '''
+#   let g:deoplete#enable_at_startup = 1
+#   source ~/.config/nvim/rc/plugins/deoplete.rc.vim
+# '''
 
 [[plugins]]
 repo = 'Shougo/neosnippet.vim'
@@ -42,15 +42,14 @@ repo = 'Shougo/context_filetype.vim'
 [[plugins]]
 repo = 'Shougo/neco-vim'
 on_ft = 'vim'
-on_i = 1
 
 [[plugins]]
 repo = 'Shougo/neoinclude.vim'
-on_path = '.*'
+on_if = 1
 
 [[plugins]]
 repo = 'Shougo/neco-syntax'
-on_i = 1
+on_source = ['deoplete.nvim']
 
 [[plugins]]
 repo = 'Shougo/vinarise.vim'
@@ -59,7 +58,7 @@ hook_add = 'let g:vinarise_enable_auto_detect = 1'
 
 [[plugins]]
 repo = 'kana/vim-niceblock'
-on_map = '<Plug>'
+on_map = {x = '<Plug>'}
 hook_add = '''
   xmap I  <Plug>(niceblock-I)
   xmap A  <Plug>(niceblock-A)
@@ -74,16 +73,10 @@ repo = 'thinca/vim-scouter'
 
 [[plugins]]
 repo = 'tyru/open-browser.vim'
-on_map = '<Plug>'
-hook_add = '''
-  nmap <Leader>w <Plug>(openbrowser-smart-search)
-  vmap <Leader>w <Plug>(openbrowser-smart-search)
-'''
 
 [[plugins]]
 repo = 'ujihisa/neco-look'
-on_i = 1
-
+on_source = ['deoplete.nvim']
 
 # [[plugins]]
 # repo = 'yonchu/accelerated-smooth-scroll'
@@ -92,24 +85,24 @@ on_i = 1
 #   let g:ac_smooth_scroll_enable_accelerating = 0
 # '''
 
-# [[plugins]]
-# repo = 'rhysd/accelerated-jk'
-# on_map = '<Plug>'
-# hook_add = '''
-#   nmap <silent>j <Plug>(accelerated_jk_gj)
-#   nmap <silent>k <Plug>(accelerated_jk_gk)
-# '''
+[[plugins]]
+repo = 'rhysd/accelerated-jk'
+on_map = {n = '<Plug>'}
+hook_add = '''
+  nmap <silent>j <Plug>(accelerated_jk_gj)
+  nmap <silent>k <Plug>(accelerated_jk_gk)
+'''
 
 [[plugins]]
 repo = 'kana/vim-operator-replace'
 depends = 'vim-operator-user'
-on_map = [['nx', '<Plug>']]
+on_map = '<Plug>'
 hook_add = 'xmap p <Plug>(operator-replace)'
 
 [[plugins]]
 repo = 'rhysd/vim-operator-surround'
 depends = 'vim-operator-user'
-on_map = '<Plug>'
+on_map = {n = '<Plug>'}
 hook_add = '''
   nmap <silent>ys <Plug>(operator-surround-append)a
   nmap <silent>ds <Plug>(operator-surround-delete)a
@@ -119,7 +112,7 @@ hook_add = '''
 [[plugins]]
 repo = 'osyo-manga/vim-textobj-multiblock'
 depends = 'vim-textobj-user'
-on_map = [['ox', '<Plug>']]
+on_map = {ox = '<Plug>'}
 
 [[plugins]]
 repo = 'saihoooooooo/glowshi-ft.vim'
@@ -134,7 +127,12 @@ hook_add = '''
 
 [[plugins]]
 repo = 'lambdalisue/vim-findent'
-
+on_if = 1
+hook_add = '''
+  " Note: It is too slow.
+  " autocmd MyAutoCmd BufRead * Findent! --no-warnings
+  nnoremap <silent> [Space]i    :<C-u>Findent! --no-warnings<CR>
+'''
 [[plugins]]
 repo = 'Konfekt/FastFold'
 on_path = '.*'
@@ -165,15 +163,15 @@ hook_add = '''
   hi link EasyMotionTarget2Second Type
 '''
 
-[[plugins]]
-repo = 'osyo-manga/vim-precious'
-depends = 'context_filetype.vim'
-on_i = 1
-hook_source = '''
-  let g:precious_enable_switch_CursorMoved = { '*': 0 }
-  autocmd MyAutoGroup InsertEnter * PreciousSwitch
-  autocmd MyAutoGroup InsertLeave * PreciousReset
-'''
+# [[plugins]]
+# repo = 'osyo-manga/vim-precious'
+# depends = 'context_filetype.vim'
+# on_i = 1
+# hook_source = '''
+#   let g:precious_enable_switch_CursorMoved = { '*': 0 }
+#   autocmd MyAutoGroup InsertEnter * PreciousSwitch
+#   autocmd MyAutoGroup InsertLeave * PreciousReset
+# '''
 
 [[plugins]]
 repo = 'terryma/vim-expand-region'
@@ -198,6 +196,10 @@ hook_add = '''
   nnoremap <Leader>gg :<C-u>GitGutterToggle<CR>
   nnoremap <Leader>gh :<C-u>GitGutterLineHighlightsToggle<CR>
 '''
+
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+on_path = '.*'
 
 [[plugins]]
 repo = 'mattn/emmet-vim'
