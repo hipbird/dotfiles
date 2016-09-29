@@ -1,4 +1,4 @@
-# Lines configured by zsh-newuser-install
+ # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
@@ -218,6 +218,7 @@ if is_osx; then
     has "qlmanage" && alias ql='qlmanage -p "$@" >&/dev/null'
     alias lb='open -a LaunchBar "$@"'
     alias ls='ls -GF'
+    alias emacs='emacs -nw'
 fi
 
 if is_linux; then
@@ -575,9 +576,6 @@ zplug 'zsh-users/zsh-completions'
 
 # zplug 'zsh-users/zsh-autosuggestions'
 
-# zplug "b4b4r07/zsh-vimode-visual", \
-# use:"*.sh"
-
 zplug 'zsh-users/zsh-history-substring-search'
 
 zplug 'zsh-users/zsh-syntax-highlighting', \
@@ -598,7 +596,14 @@ if ! zplug check --verbose; then
     fi
 fi
 
+
+
+if [ -f $(brew --prefix)/etc/brew-wrap ];then
+  source $(brew --prefix)/etc/brew-wrap
+fi
+
 # プラグインを読み込み、コマンドにパスを通す
 zplug load --verbose
 
+alias brew="env PATH=${PATH/\/Users\/EM\/\.anyenv\/envs\/pyenv\/shims:/} brew"
 export EDITOR=nvim
