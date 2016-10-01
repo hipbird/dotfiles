@@ -30,7 +30,6 @@
 # arguments and confirm whether or not to execute that command.
 #
 #------------------------------------------------------------------------------
-home/ssh,.ssh
 home/vimrc,.vimrc
 home/gvimrc,.gvimrc
 home/bashrc,.bashrc
